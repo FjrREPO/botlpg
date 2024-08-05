@@ -121,7 +121,7 @@ export default function Homepage() {
                     </CardBody>
                     <Divider />
                     <CardFooter>
-                        <p className="text-small text-default-500">Pastikan data yang diinputkan benar!</p>
+                        <p className="text-small text-default-500">Pastikan data yang di inputkan benar!</p>
                     </CardFooter>
                 </Card>
             </form>
