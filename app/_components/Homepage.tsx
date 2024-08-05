@@ -79,7 +79,7 @@ export default function Homepage() {
                     </CardHeader>
                     <Divider />
                     <CardBody>
-                        <div className='w-full h-full flex flex-col gap-3'>
+                        <div className='w-full h-full flex flex-col gap-5 pt-3'>
                             <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4">
                                 <Input
                                     type="email"
@@ -112,8 +112,9 @@ export default function Homepage() {
                                 label="Upload file CSV"
                                 onChange={handleFileChange}
                                 accept=".csv"
+                                className='cursor-pointer'
                             />
-                            <Button color="success" className='h-auto py-2 font-semibold text-white' type="submit">
+                            <Button color="success" className='h-auto py-2 font-semibold text-white mt-2' type="submit">
                                 Submit
                             </Button>
                         </div>
