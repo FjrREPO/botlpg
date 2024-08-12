@@ -1,130 +1,188 @@
-'use client';
-
-import React, { useState, ChangeEvent } from 'react';
-import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
-import { Divider } from '@nextui-org/divider';
-import { Image } from '@nextui-org/image';
-import { Input } from '@nextui-org/input';
-import { Button } from '@nextui-org/button';
-import { MailIcon } from '@/components/icon/MailIcon';
-import { KeyIcon } from '@/components/icon/KeyIcon';
+"use client";
+import Image from "next/image";
+import React, { useEffect, useId, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useOutsideClick } from "@/hooks/use-outside-click";
+import { Botlpg } from "./Botlpg";
+import { BackgroundGradient } from "@/components/ui/background-gradient";
+import { Generatecsv } from "./Generatecsv";
 
 export default function Homepage() {
-    const [email, setEmail] = useState('icanbejo@gmail.com');
-    const [password, setPassword] = useState('');
-    const [csvFile, setCsvFile] = useState<File | null>(null);
+    const [active, setActive] = useState<(typeof cards)[number] | boolean | null>(
+        null
+    );
+    const id = useId();
+    const ref = useRef<HTMLDivElement>(null);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!email) {
-            alert('Please fill email.');
-            return;
-        } else if (!password) {
-            alert('Please fill password.');
-            return;
-        } else if (!csvFile) {
-            alert('Please select a CSV file.');
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('email', email);
-        formData.append('password', password);
-        formData.append('csvFile', csvFile);
-
-        try {
-            const formDataObj = Object.fromEntries(formData.entries());
-            console.log('Form data:', formDataObj);
-
-            const res = await fetch('/api/automation', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (!res.ok) {
-                throw new Error('Server responded with an error');
+    useEffect(() => {
+        function onKeyDown(event: KeyboardEvent) {
+            if (event.key === "Escape") {
+                setActive(false);
             }
-
-            const result = await res.json();
-            alert(result.message);
-        } catch (error) {
-            console.error('Error during form submission:', error);
-            alert('An error occurred. Please try again.');
         }
-    };
 
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setCsvFile(e.target.files[0]);
+        if (active && typeof active === "object") {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
         }
-    };
+
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, [active]);
+
+    useOutsideClick(ref, () => setActive(null));
 
     return (
-        <div className='w-full h-full flex justify-center'>
-            <form onSubmit={handleSubmit}>
-                <Card className="max-w-[400px]">
-                    <CardHeader className="flex gap-3">
-                        <Image
-                            alt="nextui logo"
-                            height={40}
-                            radius="sm"
-                            src="https://res.cloudinary.com/dutlw7bko/image/upload/v1722869254/images_1_umygcp.png"
-                            width={40}
-                        />
-                        <div className="flex flex-col">
-                            <p className="text-md">Bot LPG</p>
-                            <a className="text-small text-default-500 hover:text-default-600 duration-200" href='https://subsiditepatlpg.mypertamina.id' target='_blank'>https://subsiditepatlpg.mypertamina.id</a>
-                        </div>
-                    </CardHeader>
-                    <Divider />
-                    <CardBody>
-                        <div className='w-full h-full flex flex-col gap-5 pt-3'>
-                            <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4">
-                                <Input
-                                    type="email"
-                                    label="Email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="you@example.com"
-                                    labelPlacement="outside"
-                                    variant='bordered'
-                                    endContent={
-                                        <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                                    }
-                                />
-                                <Input
-                                    type="password"
-                                    label="Pin"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="6 digit"
-                                    labelPlacement="outside"
-                                    variant='bordered'
-                                    endContent={
-                                        <KeyIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                                    }
-                                />
+        <>
+            <AnimatePresence>
+                {active && typeof active === "object" && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/20 h-full w-full z-10"
+                    />
+                )}
+            </AnimatePresence>
+            <AnimatePresence>
+                {active && typeof active === "object" ? (
+                    <div className="fixed inset-0 grid top-5 bottom-5 place-content-center place-items-center z-[100]">
+                        <motion.button
+                            key={`button-${active.title}-${id}`}
+                            layout
+                            initial={{
+                                opacity: 0,
+                            }}
+                            animate={{
+                                opacity: 1,
+                            }}
+                            exit={{
+                                opacity: 0,
+                                transition: {
+                                    duration: 0.05,
+                                },
+                            }}
+                            className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-white rounded-full h-6 w-6"
+                            onClick={() => setActive(null)}
+                        >
+                            <CloseIcon />
+                        </motion.button>
+                        <motion.div
+                            layoutId={`card-${active.title}-${id}`}
+                            ref={ref}
+                            className="w-full max-w-[500px] h-full flex flex-col sm:rounded-3xl overflow-x-hidden"
+                        >
+                            <div className="relative">
+                                <motion.div
+                                    layout
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="text-neutral-600 h-full text-xs md:text-sm lg:text-base md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
+                                >
+                                    {typeof active.content === "function"
+                                        ? active.content()
+                                        : active.content}
+                                </motion.div>
                             </div>
-                            <Input
-                                type="file"
-                                variant={'bordered'}
-                                label="Upload file CSV"
-                                onChange={handleFileChange}
-                                accept=".csv"
-                                className='cursor-pointer'
+                        </motion.div>
+                    </div>
+                ) : null}
+            </AnimatePresence>
+            <ul className="w-full flex flex-row flex-wrap items-center justify-center">
+                {cards.map((card, index) => (
+                    <motion.div
+                        layoutId={`card-${card.title}-${id}`}
+                        key={card.title}
+                        onClick={() => setActive(card)}
+                        className="p-7 flex flex-col rounded-xl cursor-pointer"
+                    >
+                        <BackgroundGradient className="rounded-[22px] max-w-[250px] w-fit p-4 sm:p-10 bg-white dark:bg-zinc-900 flex justify-center flex-col items-center">
+                            <Image
+                                src={card.src}
+                                alt="jordans"
+                                height={100}
+                                width={100}
+                                className="object-contain rounded-[20px]"
                             />
-                            <Button color="success" className='h-auto py-2 font-semibold text-white mt-2' type="submit">
-                                Submit
-                            </Button>
-                        </div>
-                    </CardBody>
-                    <Divider />
-                    <CardFooter>
-                        <p className="text-small text-default-500">Pastikan data yang di inputkan benar!</p>
-                    </CardFooter>
-                </Card>
-            </form>
-        </div>
+                            <motion.p
+                                layoutId={`title-${card.title}-${id}`}
+                                className="text-base sm:text-xl text-black mt-4 mb-2 dark:text-neutral-200"
+                            >
+                                {card.title}
+                            </motion.p>
+
+                            <motion.p
+                                layoutId={`description-${card.description}-${id}`}
+                                className="text-sm text-neutral-600 dark:text-neutral-400 text-center"
+                            >
+                                {card.description}
+                            </motion.p>
+                        </BackgroundGradient>
+                    </motion.div>
+                ))}
+            </ul>
+        </>
     );
 }
+
+export const CloseIcon = () => {
+    return (
+        <motion.svg
+            initial={{
+                opacity: 0,
+            }}
+            animate={{
+                opacity: 1,
+            }}
+            exit={{
+                opacity: 0,
+                transition: {
+                    duration: 0.05,
+                },
+            }}
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-4 w-4 text-black"
+        >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M18 6l-12 12" />
+            <path d="M6 6l12 12" />
+        </motion.svg>
+    );
+};
+
+const cards = [
+    {
+        description: "Pengisian data-data lpg pertamina secara otomatis",
+        title: "Bot LPG",
+        src: "https://res.cloudinary.com/dutlw7bko/image/upload/v1722869254/images_1_umygcp.png",
+        ctaText: "Visit",
+        ctaLink: "https://ui.aceternity.com/templates",
+        content: () => {
+            return (
+                <Botlpg />
+            );
+        },
+    },
+    {
+        description: "Tools untuk membuat atau mengedit CSV",
+        title: "CSV Editor",
+        src: "https://res.cloudinary.com/dutlw7bko/image/upload/v1723383902/project-orang/8242984_t6ek42.png",
+        ctaText: "Visit",
+        ctaLink: "https://ui.aceternity.com/templates",
+        content: () => {
+            return (
+                <Generatecsv />
+            );
+        },
+    },
+];

@@ -70,13 +70,16 @@ async function runAutomation(email: string, password: string, data: CsvRow[]) {
             await driver.get('https://subsiditepatlpg.mypertamina.id/merchant/app/verification-nik');
             
             await driver.wait(until.elementLocated(By.css('#mantine-r0'))).sendKeys(email);
+
+            await wait(1000);
+
             await driver.findElement(By.css('#mantine-r1')).sendKeys(password);
 
-            await wait(3000);
+            await wait(1000);
 
             await driver.findElement(By.css('button.styles_btnLogin__wsKTT')).click();
             
-            await wait(3000);
+            await wait(1000);
             
             await driver.wait(until.elementLocated(By.css('#mantine-r5'))).sendKeys(data[i].nomor);
             await driver.findElement(By.css('#__next > div:nth-child(1) > div:nth-child(1) > main > div > div > div > div > div:nth-child(2) > div > div:nth-child(1) > form > div:nth-child(2) > button')).click();
