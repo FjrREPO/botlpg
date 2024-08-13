@@ -132,7 +132,7 @@ export const Botlpg = () => {
                         />
                         <div className="flex flex-col">
                             <p className="text-md">Bot LPG</p>
-                            <a className="text-small text-default-500 hover:text-default-600 duration-200" href='https://subsiditepatlpg.mypertamina.id' target='_blank'>https://subsiditepatlpg.mypertamina.id</a>
+                            <a className="text-small text-default-500 hover:text-default-600 duration-200" href='https://subsiditepatlpg.mypertamina.id' ref='norefferer' target='_blank'>https://subsiditepatlpg.mypertamina.id</a>
                         </div>
                     </CardHeader>
                     <Divider />
@@ -178,7 +178,7 @@ export const Botlpg = () => {
                     <Divider />
                     <CardFooter className={`flex flex-col items-start w-full h-auto ${loading && 'brightness-50'}`}>
                         <p className="text-small text-default-500">Lihat / Download contoh csv{" "}
-                            <a href="https://drive.google.com/file/d/18JqOP2d4_AIG6XLY_BBhvQHxVcgKThQN/view?usp=sharing" className='text-blue-500 font-bold' target='_blank'>
+                            <a href="https://drive.google.com/file/d/18JqOP2d4_AIG6XLY_BBhvQHxVcgKThQN/view?usp=sharing" className='text-blue-500 font-bold' target='_blank' ref='norefferer'>
                                 klik disini
                             </a>
                         </p>
