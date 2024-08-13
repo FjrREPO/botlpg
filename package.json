@@ -3,11 +3,10 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "next dev --turbo",
-		"build": "npm run install-deps && next build",
+		"dev": "PLAYWRIGHT_BROWSERS_PATH=0 next dev --turbo",
+		"build": "next build",
 		"start": "next start",
-		"lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix",
-		"install-deps": "apt-get update && apt-get install -y libnss3 libnspr4 libgbm1"
+		"lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
 	},
 	"dependencies": {
 		"@nextui-org/button": "^2.0.37",
