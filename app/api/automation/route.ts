@@ -5,12 +5,6 @@ import { Builder, By, until, WebDriver } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import * as path from 'path';
 
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};
-
 interface CsvRow {
     nomor: string;
     [key: string]: string;
