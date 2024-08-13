@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { parse } from 'csv-parse';
 import { Readable } from 'stream';
-import { Builder, By, until, WebDriver } from 'selenium-webdriver';
-import chrome from 'selenium-webdriver/chrome';
-import * as path from 'path';
+import { chromium, Browser, Page } from 'playwright';
 
 interface CsvRow {
     nomor: string;
@@ -47,42 +45,34 @@ async function parseCSV(fileBuffer: ArrayBuffer): Promise<CsvRow[]> {
 const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function runAutomation(email: string, password: string, data: CsvRow[]) {
-    const chromeDriverPath = path.resolve('public', 'chromedriver.exe');
+    const browser: Browser = await chromium.launch({ headless: false });
 
     for (let i = 0; i < data.length; i++) {
-        const options = new chrome.Options();
-        const serviceBuilder = new chrome.ServiceBuilder(chromeDriverPath);
-
-        const driver: WebDriver = await new Builder()
-            .forBrowser('chrome')
-            .setChromeOptions(options)
-            .setChromeService(serviceBuilder)
-            .build();
+        const page: Page = await browser.newPage();
 
         try {
             console.log(`Processing data ${i + 1}/${data.length}`);
-            await driver.get('https://subsiditepatlpg.mypertamina.id/merchant/app/verification-nik');
+            await page.goto('https://subsiditepatlpg.mypertamina.id/merchant/app/verification-nik');
             
-            await driver.wait(until.elementLocated(By.css('#mantine-r0'))).sendKeys(email);
-
+            await page.fill('#mantine-r0', email);
             await wait(1000);
 
-            await driver.findElement(By.css('#mantine-r1')).sendKeys(password);
-
+            await page.fill('#mantine-r1', password);
             await wait(1000);
 
-            await driver.findElement(By.css('button.styles_btnLogin__wsKTT')).click();
-            
+            await page.click('button.styles_btnLogin__wsKTT');
             await wait(1000);
             
-            await driver.wait(until.elementLocated(By.css('#mantine-r5'))).sendKeys(data[i].nomor);
-            await driver.findElement(By.css('#__next > div:nth-child(1) > div:nth-child(1) > main > div > div > div > div > div:nth-child(2) > div > div:nth-child(1) > form > div:nth-child(2) > button')).click();
+            await page.fill('#mantine-r5', data[i].nomor);
+            await page.click('#__next > div:nth-child(1) > div:nth-child(1) > main > div > div > div > div > div:nth-child(2) > div > div:nth-child(1) > form > div:nth-child(2) > button'); // Click submit button
             
-            await driver.sleep(2000);
+            await page.waitForTimeout(2000);
         } catch (error) {
             console.error(`Error during processing entry ${i + 1}:`, error);
         } finally {
-            await driver.quit();
+            await page.close();
         }
     }
+
+    await browser.close();
 }
