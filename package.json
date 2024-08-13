@@ -4,10 +4,10 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbo",
-		"build": "next build",
+		"build": "npm run install-deps && next build",
 		"start": "next start",
 		"lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix",
-		"postinstall": "playwright install"
+		"install-deps": "apt-get update && apt-get install -y libnss3 libnspr4 libgbm1"
 	},
 	"dependencies": {
 		"@nextui-org/button": "^2.0.37",
@@ -37,7 +37,6 @@
 		"next": "14.2.4",
 		"next-themes": "^0.2.1",
 		"papaparse": "^5.4.1",
-		"playwright": "^1.45.3",
 		"puppeteer": "^22.15.0",
 		"react": "18.3.1",
 		"react-data-grid": "^7.0.0-beta.46",
@@ -68,6 +67,7 @@
 		"eslint-plugin-react": "^7.23.2",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-unused-imports": "^3.2.0",
+		"playwright": "^1.46.0",
 		"postcss": "8.4.38",
 		"tailwind-variants": "0.1.20",
 		"tailwindcss": "3.4.3",
