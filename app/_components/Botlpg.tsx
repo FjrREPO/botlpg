@@ -46,6 +46,8 @@ export const Botlpg = () => {
         formData.append('headless', String(headless));
 
         try {
+            console.log(formData)
+            console.log(JSON.stringify(formData))
             const res = await fetch('/api/automation', {
                 method: 'POST',
                 body: formData,
