@@ -12,54 +12,28 @@ import { Bounce, toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Spinner } from '@nextui-org/spinner';
 import { FileUpload } from '@/components/ui/file-upload';
+import { Checkbox } from '@nextui-org/checkbox';
 
 export const Botlpg = () => {
     const [email, setEmail] = useState('icanbejo@gmail.com');
     const [password, setPassword] = useState('');
     const [csvFile, setCsvFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
+    const [headless, setHeadless] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!email) {
-            toast.warn('Isi email dengan benar!', {
-                position: "top-right",
-                autoClose: 3000,
-                rtl: false,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                transition: Bounce,
-            });
+            showToast('Isi email dengan benar!', 'warn');
             return;
-        } else if (!password) {
-            toast.warn('Isi pin dengan benar!', {
-                position: "top-right",
-                autoClose: 3000,
-                rtl: false,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                transition: Bounce,
-            });
+        }
+        if (!password) {
+            showToast('Isi pin dengan benar!', 'warn');
             return;
-        } else if (!csvFile) {
-            toast.warn('Masukkan file csv dengan benar!', {
-                position: "top-right",
-                autoClose: 3000,
-                rtl: false,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                transition: Bounce,
-            });
+        }
+        if (!csvFile) {
+            showToast('Masukkan file csv dengan benar!', 'warn');
             return;
         }
 
@@ -69,6 +43,7 @@ export const Botlpg = () => {
         formData.append('email', email);
         formData.append('password', password);
         formData.append('csvFile', csvFile);
+        formData.append('headless', String(headless));
 
         try {
             const res = await fetch('/api/automation', {
@@ -81,33 +56,27 @@ export const Botlpg = () => {
             }
 
             const result = await res.json();
-            toast.success(result.message, {
-                position: "top-right",
-                autoClose: 3000,
-                rtl: false,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                transition: Bounce,
-            });
+            showToast(result.message, 'success');
         } catch (error) {
             console.error('Error during form submission:', error);
-            toast.error('An error occurred. Please try again.', {
-                position: "top-right",
-                autoClose: 3000,
-                rtl: false,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                transition: Bounce,
-            });
+            showToast('An error occurred. Please try again.', 'error');
         } finally {
             setLoading(false);
         }
+    };
+
+    const showToast = (message: string, type: 'success' | 'warn' | 'error') => {
+        toast[type](message, {
+            position: "top-right",
+            autoClose: 3000,
+            rtl: false,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            transition: Bounce,
+        });
     };
 
     const handleFileChange = (file: File | null) => {
@@ -132,7 +101,9 @@ export const Botlpg = () => {
                         />
                         <div className="flex flex-col">
                             <p className="text-md">Bot LPG</p>
-                            <a className="text-small text-default-500 hover:text-default-600 duration-200" href='https://subsiditepatlpg.mypertamina.id' rel='noreferrer' target='_blank'>https://subsiditepatlpg.mypertamina.id</a>
+                            <a className="text-small text-default-500 hover:text-default-600 duration-200" href='https://subsiditepatlpg.mypertamina.id' rel='noreferrer' target='_blank'>
+                                https://subsiditepatlpg.mypertamina.id
+                            </a>
                         </div>
                     </CardHeader>
                     <Divider />
@@ -148,9 +119,7 @@ export const Botlpg = () => {
                                     labelPlacement="outside"
                                     variant='bordered'
                                     disabled={loading}
-                                    endContent={
-                                        <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                                    }
+                                    endContent={<MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
                                 />
                                 <Input
                                     type="password"
@@ -161,23 +130,33 @@ export const Botlpg = () => {
                                     labelPlacement="outside"
                                     variant='bordered'
                                     disabled={loading}
-                                    endContent={
-                                        <KeyIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                                    }
+                                    endContent={<KeyIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
                                 />
                             </div>
                             <FileUpload
                                 onChange={handleFileChange}
                                 disabled={loading}
                             />
-                            <Button color="success" className={`h-auto py-2 font-semibold text-white ${loading || email == '' || password == '' ? 'cursor-no-drop' : ''}`} type="submit" disabled={loading || email == '' || password == ''}>
+                            <div className="flex items-center gap-2 mb-4">
+                                <Checkbox
+                                    defaultSelected
+                                    checked={headless}
+                                    onChange={() => setHeadless(!headless)}
+                                    disabled={loading}
+                                    radius="sm"
+                                >
+                                    Tampilkan progress browser
+                                </Checkbox>
+                            </div>
+                            <Button color="success" className={`h-auto py-2 font-semibold text-white ${loading || !email || !password || !csvFile ? 'cursor-not-allowed' : ''}`} type="submit" disabled={loading || !email || !password || !csvFile}>
                                 Submit
                             </Button>
                         </div>
                     </CardBody>
                     <Divider />
                     <CardFooter className={`flex flex-col items-start w-full h-auto ${loading && 'brightness-50'}`}>
-                        <p className="text-small text-default-500">Lihat / Download contoh csv{" "}
+                        <p className="text-small text-default-500">
+                            Lihat / Download contoh csv{" "}
                             <a href="https://drive.google.com/file/d/18JqOP2d4_AIG6XLY_BBhvQHxVcgKThQN/view?usp=sharing" className='text-blue-500 font-bold' target='_blank' rel='noreferrer'>
                                 klik disini
                             </a>
