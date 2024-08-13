@@ -178,7 +178,7 @@ export const Botlpg = () => {
                     <Divider />
                     <CardFooter className={`flex flex-col items-start w-full h-auto ${loading && 'brightness-50'}`}>
                         <p className="text-small text-default-500">Lihat / Download contoh csv{" "}
-                            <a href="https://drive.google.com/file/d/18JqOP2d4_AIG6XLY_BBhvQHxVcgKThQN/view?usp=sharing" className='text-blue-500 font-bold' target='_blank' rel='norefferer'>
+                            <a href="https://drive.google.com/file/d/18JqOP2d4_AIG6XLY_BBhvQHxVcgKThQN/view?usp=sharing" className='text-blue-500 font-bold' target='_blank' rel='noreferrer'>
                                 klik disini
                             </a>
                         </p>
