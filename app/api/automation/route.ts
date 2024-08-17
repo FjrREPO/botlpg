@@ -93,3 +93,4 @@ async function runAutomation(email: string, password: string, data: CsvRow[], he
         await browser.close();
     }
 }
+
