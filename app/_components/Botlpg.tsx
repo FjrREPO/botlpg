@@ -102,7 +102,7 @@ export const Botlpg = () => {
                             width={40}
                         />
                         <div className="flex flex-col">
-                            <p className="text-md">Bot{" "}LPG</p>
+                            <p className="text-md">Bot LPG</p>
                             <a className="text-small text-default-500 hover:text-default-600 duration-200" href='https://subsiditepatlpg.mypertamina.id' rel='noreferrer' target='_blank'>
                                 https://subsiditepatlpg.mypertamina.id
                             </a>
