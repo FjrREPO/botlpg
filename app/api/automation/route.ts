@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { parse } from 'csv-parse';
 import { Readable } from 'stream';
-import { chromium, Browser, Page } from 'playwright';
+import { chromium } from 'playwright';
 
 interface CsvRow {
     nomor: string;
@@ -50,14 +50,21 @@ async function parseCSV(fileBuffer: ArrayBuffer): Promise<CsvRow[]> {
 const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function runAutomation(email: string, password: string, data: CsvRow[], headless: boolean) {
-    const browser: Browser = await chromium.launch({ headless: headless });
+    const browser = await chromium.launch({
+        headless,
+    });
 
     try {
+        const pages = await Promise.all(data.map(async (_, index) => {
+            const page = await browser.newPage();
+            console.log(`Processing data ${index + 1}/${data.length}`);
+            return page;
+        }));
+
         for (let index = 0; index < data.length; index++) {
             const row = data[index];
-            const page: Page = await browser.newPage();
+            const page = pages[index];
             try {
-                console.log(`Processing data ${index + 1}/${data.length}`);
                 await page.goto('https://subsiditepatlpg.mypertamina.id/merchant/app/verification-nik');
 
                 await page.fill('#mantine-r0', email);
@@ -72,7 +79,7 @@ async function runAutomation(email: string, password: string, data: CsvRow[], he
                 await page.fill('#mantine-r5', row.nomor);
                 await page.click('#__next > div:nth-child(1) > div:nth-child(1) > main > div > div > div > div > div:nth-child(2) > div > div:nth-child(1) > form > div:nth-child(2) > button');
 
-                await page.waitForTimeout(2000);
+                await wait(2000);
             } catch (error) {
                 console.error(`Error during processing entry ${index + 1}:`, error);
             } finally {

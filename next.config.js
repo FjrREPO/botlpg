@@ -8,7 +8,8 @@ const nextConfig = {
                 hostname: 'res.cloudinary.com',
             },
         ],
-    }
+    },
+    swcMinify: true,
 }
 
 module.exports = nextConfig
