@@ -1,18 +1,8 @@
 {
-    "builds": [
-        {
-            "src": "app/api/**/*.ts",
-            "use": "@vercel/node",
-            "config": {
-                "includeFiles": [
-                    "node_modules/playwright/**/*"
-                ]
-            }
-        }
-    ],
     "functions": {
-        "app/api/**/*.ts": {
-            "maxDuration": 60
+        "app/api/**/*.{ts,js}": {
+            "maxDuration": 60,
+            "memory": 1024
         }
     }
 }
