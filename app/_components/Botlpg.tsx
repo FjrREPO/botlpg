@@ -18,6 +18,7 @@ export const Botlpg = () => {
     const [email, setEmail] = useState('icanbejo@gmail.com');
     const [password, setPassword] = useState('');
     const [csvFile, setCsvFile] = useState<File | null>(null);
+    const [chromePath, setChromePath] = useState("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe");
     const [loading, setLoading] = useState(false);
     const [headless, setHeadless] = useState(false);
 
@@ -44,6 +45,7 @@ export const Botlpg = () => {
         formData.append('password', password);
         formData.append('csvFile', csvFile);
         formData.append('headless', String(headless));
+        formData.append('chromePath', chromePath);
 
         try {
             console.log(formData)
@@ -137,6 +139,16 @@ export const Botlpg = () => {
                             </div>
                             <FileUpload
                                 onChange={handleFileChange}
+                                disabled={loading}
+                            />
+                            <Input
+                                type="text"
+                                label="Path Chrome (Chrome.exe)"
+                                value={chromePath}
+                                onChange={(e) => setChromePath(e.target.value)}
+                                placeholder="e.g., /path/to/chrome"
+                                labelPlacement="outside"
+                                variant='bordered'
                                 disabled={loading}
                             />
                             <div className="flex items-center gap-2 mb-4">

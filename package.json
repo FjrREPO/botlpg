@@ -6,8 +6,7 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix",
-		"postinstall": "playwright install"
+		"lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
 	},
 	"dependencies": {
 		"@nextui-org/button": "^2.0.37",
@@ -39,6 +38,7 @@
 		"next-themes": "^0.2.1",
 		"papaparse": "^5.4.1",
 		"playwright": "^1.46.1",
+		"puppeteer": "^23.1.0",
 		"puppeteer-core": "^6.0.0",
 		"react": "18.3.1",
 		"react-data-grid": "^7.0.0-beta.46",
@@ -52,6 +52,7 @@
 		"@types/formidable": "^3.4.5",
 		"@types/node": "20.5.7",
 		"@types/papaparse": "^5.3.14",
+		"@types/puppeteer": "^5.4.7",
 		"@types/puppeteer-core": "^5.4.0",
 		"@types/react": "18.3.3",
 		"@types/react-dom": "18.3.0",
