@@ -14,7 +14,6 @@ export async function POST(req: NextRequest) {
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
         const csvFile = formData.get('csvFile') as File;
-        const chromePath = formData.get('chromePath') as string;
         const headless = formData.get('headless') === 'true';
 
         if (!email || !password || !csvFile) {
@@ -24,7 +23,7 @@ export async function POST(req: NextRequest) {
         const fileBuffer = await csvFile.arrayBuffer();
         const data: CsvRow[] = await parseCSV(fileBuffer);
 
-        await runAutomation(email, password, data, headless, chromePath);
+        await runAutomation(email, password, data, headless);
 
         return NextResponse.json({ message: 'Semua data berhasil di generate🙌' });
     } catch (error) {
@@ -50,7 +49,7 @@ async function parseCSV(fileBuffer: ArrayBuffer): Promise<CsvRow[]> {
 
 const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-async function runAutomation(email: string, password: string, data: CsvRow[], headless: boolean, chromePath: string) {
+async function runAutomation(email: string, password: string, data: CsvRow[], headless: boolean) {
     for (let index = 0; index < data.length; index++) {
         const row = data[index];
         console.log(`Processing data ${index + 1}/${data.length}`);
@@ -59,7 +58,6 @@ async function runAutomation(email: string, password: string, data: CsvRow[], he
         try {
             browser = await puppeteer.launch({
                 headless: headless,
-                executablePath: chromePath || undefined,
             });
 
             const page = await browser.newPage();
@@ -72,11 +70,11 @@ async function runAutomation(email: string, password: string, data: CsvRow[], he
             await page.type('#mantine-r1', password);
             await wait(1000);
 
-            await page.click('button.styles_btnLogin__wsKTT'),
+            await page.click('button.styles_btnLogin__wsKTT');
             await wait(1000);
 
             await page.type('#mantine-r5', row.nomor);
-            await page.click('#__next > div:nth-child(1) > div:nth-child(1) > main > div > div > div > div > div:nth-child(2) > div > div:nth-child(1) > form > div:nth-child(2) > button'),
+            await page.click('#__next > div:nth-child(1) > div:nth-child(1) > main > div > div > div > div > div:nth-child(2) > div > div:nth-child(1) > form > div:nth-child(2) > button');
 
             await wait(3000);
         } catch (error) {

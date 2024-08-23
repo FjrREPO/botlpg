@@ -6,6 +6,7 @@ import { useOutsideClick } from "@/hooks/use-outside-click";
 import { Botlpg } from "./Botlpg";
 import { BackgroundGradient } from "@/components/ui/background-gradient";
 import { Generatecsv } from "./Generatecsv";
+import { BotlpgLocal } from "./BotlpgLocal";
 
 export default function Homepage() {
     const [active, setActive] = useState<(typeof cards)[number] | boolean | null>(
@@ -79,7 +80,7 @@ export default function Homepage() {
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }}
-                                    className="text-neutral-600 h-full text-xs md:text-sm lg:text-base md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
+                                    className="text-neutral-600 h-full text-xs md:text-sm lg:text-base md:h-fit flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
                                 >
                                     {typeof active.content === "function"
                                         ? active.content()
@@ -182,6 +183,18 @@ const cards = [
         content: () => {
             return (
                 <Generatecsv />
+            );
+        },
+    },
+    {
+        description: "Program untuk running bot secara local dengan vscode",
+        title: "Local Bot",
+        src: "https://res.cloudinary.com/dutlw7bko/image/upload/v1724163847/project-orang/pythoned_rbrdcl.png",
+        ctaText: "Visit",
+        ctaLink: "https://ui.aceternity.com/templates",
+        content: () => {
+            return (
+                <BotlpgLocal />
             );
         },
     },
